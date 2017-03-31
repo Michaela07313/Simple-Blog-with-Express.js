@@ -42,7 +42,16 @@ module.exports = {
         Article.findById(id)
         .populate('auhor')
         .then(article => {
-            res.render('article/details', article)
+            if (!req.user) {
+                res.render('article/details', {article: article, isUserAuthorized: false})
+                return
+            }
+
+            req.user.isInRole('Admin').then(isAdmin => {
+                let isUserAuthorized = isAdmin || req.user.isAuthor(article)
+
+                res.render('article/details', {article: article, isUserAuthorized: isUserAuthorized})
+            })
         })
     },
     editGet: (req, res) => {

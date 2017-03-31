@@ -98,5 +98,14 @@ module.exports = {
     logout: (req, res) => {
         req.logOut();
         res.redirect('/');
+    },
+
+    details: (req, res) => {
+        let _id = req.user.id;
+        
+        User.findById(_id)
+        .then(user => {
+            res.render('user/details', {user: user})
+        })
     }
 };
